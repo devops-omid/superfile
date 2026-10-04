@@ -6,7 +6,14 @@ const (
 	FindMinWidth  = 15
 	FindMinHeight = 3
 
-	maxVisibleResults = 5 // Maximum number of results visible at once
+	// visibleOverhead is the number of non-result lines the modal box always
+	// renders: top and bottom borders (2), the query input line (1), the
+	// section divider below it (1), and the worst-case scroll indicators
+	// (divider + 2 indicator lines). The visible results window is derived
+	// from the modal's max height minus this overhead, so the modal fills
+	// its allotted height on tall terminals instead of showing a fixed
+	// handful of results.
+	visibleOverhead = 7
 
 	maxResults = 1000
 

@@ -428,7 +428,11 @@ func TestNavigation(t *testing.T) {
 }
 
 func TestNavigationUpdatesRenderIndex(t *testing.T) {
+	// Shrink the 50-row helper modal to the height that yields a
+	// 5-row visible window, which these 6 presses of down overflow.
+	const testWindow = 5
 	m := setupTestModelWithResults(7)
+	m.maxHeight = testWindow + visibleOverhead
 	for range 6 {
 		m.navigateDown()
 	}
@@ -437,6 +441,11 @@ func TestNavigationUpdatesRenderIndex(t *testing.T) {
 }
 
 func TestUpdateRenderIndex(t *testing.T) {
+	// The helper model has a 50-row max height (a 43-row visible window).
+	// Shrink it to the height that yields a 5-row window so the
+	// cursor/renderIndex math these cases target is unchanged.
+	const testWindow = 5
+
 	testdata := []struct {
 		name                string
 		resultCnt           int
@@ -454,7 +463,7 @@ func TestUpdateRenderIndex(t *testing.T) {
 		{
 			name:                "cursor at last visible position has renderIndex 1",
 			resultCnt:           10,
-			cursor:              maxVisibleResults,
+			cursor:              testWindow,
 			initialRenderIndex:  0,
 			expectedRenderIndex: 1,
 		},
@@ -463,7 +472,7 @@ func TestUpdateRenderIndex(t *testing.T) {
 			resultCnt:           10,
 			cursor:              9,
 			initialRenderIndex:  0,
-			expectedRenderIndex: 10 - maxVisibleResults,
+			expectedRenderIndex: 10 - testWindow,
 		},
 		{
 			name:                "cursor above renderIndex causes renderIndex to decrease",
@@ -505,6 +514,7 @@ func TestUpdateRenderIndex(t *testing.T) {
 	for _, td := range testdata {
 		t.Run(td.name, func(t *testing.T) {
 			m := setupTestModelWithResults(td.resultCnt)
+			m.maxHeight = testWindow + visibleOverhead
 			m.cursor = td.cursor
 			m.renderIndex = td.initialRenderIndex
 			m.updateRenderIndex()

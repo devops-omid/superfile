@@ -30,21 +30,23 @@ func (m *Model) updateRenderIndex() {
 		return
 	}
 
+	visible := m.visibleResults()
+
 	// If cursor is above visible range, scroll up
 	if m.cursor < m.renderIndex {
 		m.renderIndex = m.cursor
 	}
 
 	// If cursor is below visible range, scroll down
-	if m.cursor >= m.renderIndex+maxVisibleResults {
-		m.renderIndex = m.cursor - maxVisibleResults + 1
+	if m.cursor >= m.renderIndex+visible {
+		m.renderIndex = m.cursor - visible + 1
 	}
 
 	// Ensure renderIndex is within bounds
 	if m.renderIndex < 0 {
 		m.renderIndex = 0
 	}
-	maxRenderIndex := len(m.results) - maxVisibleResults
+	maxRenderIndex := len(m.results) - visible
 	if maxRenderIndex < 0 {
 		maxRenderIndex = 0
 	}

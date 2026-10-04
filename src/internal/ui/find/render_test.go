@@ -41,6 +41,10 @@ func TestRenderNoResults(t *testing.T) {
 }
 
 func TestRenderScrollIndicator(t *testing.T) {
+	// The helper model has a 50-row max height (a 43-row visible window).
+	// Shrink it to the height that yields a 5-row window so the 10 results
+	// overflow it and the scroll indicators render.
+	const testWindow = 5
 	testdata := []struct {
 		name       string
 		resultCnt  int
@@ -84,6 +88,7 @@ func TestRenderScrollIndicator(t *testing.T) {
 			m.open = true
 			m.fdFound = true
 			m.width = 50
+			m.maxHeight = testWindow + visibleOverhead
 			m.results = setupTestModelWithResults(tt.resultCnt).results
 			m.cursor = tt.cursor
 			m.updateRenderIndex()
